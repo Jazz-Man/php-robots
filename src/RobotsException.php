@@ -1,5 +1,5 @@
 <?php
-namespace Steein\Robots;
+namespace JazzMan\Robots;
 
 class RobotsException extends \Exception
 {
