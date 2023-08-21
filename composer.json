@@ -19,7 +19,8 @@
     }
   ],
   "require": {
-    "php": "^8.1"
+    "php": "^8.1",
+    "jazzman/singleton-trait": "^1.1"
   },
   "require-dev": {
     "jazzman/php-cs-fixer-rules": "^0.2.0",

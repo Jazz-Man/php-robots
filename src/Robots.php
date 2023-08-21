@@ -2,9 +2,12 @@
 namespace JazzMan\Robots;
 
 use Closure;
+use JazzMan\Traits\SingletonTrait;
 
 class Robots implements RobotsInterface
 {
+	use SingletonTrait;
+
     /**
      * The lines of for the robots.txt
      *
@@ -13,29 +16,6 @@ class Robots implements RobotsInterface
     protected $linear   =   [
         //
     ];
-
-    /**
-     * Static instance of self
-     *
-     * @var Robots
-     */
-    protected static $_instance;
-
-    /**
-     * A method of returning the static instance to allow access to the
-     * instantiated object from within another class.
-     *
-     * @uses $robots = Robots::getInstance();
-     *
-     * @return RobotsInterface
-     */
-    public static function getInstance() : RobotsInterface
-    {
-        if(self::$_instance === null) {
-            self::$_instance = new static;
-        }
-        return self::$_instance;
-    }
 
     /**
      * Construct
@@ -52,7 +32,7 @@ class Robots implements RobotsInterface
      * @return RobotsInterface
      * @throws RobotsException
      */
-    public function each(\Closure $closure) : RobotsInterface
+    public function each(\Closure|callable $closure) : RobotsInterface
     {
         if($closure instanceof \Closure) {
             $closure($this);
