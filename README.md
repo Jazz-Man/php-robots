@@ -6,14 +6,14 @@ Generator of the text file "robots.txt"
 ## Installation
 First, install the package via composer:
 ```
-composer require steein/robots
+composer require jazzman/php-robots
 ```
 Or add the following to your ```composer.json``` in the require section and then run ```composer``` update to install it.
 
 ```json
 {
     "require": {
-        "steein/robots": "1.4"
+        "jazzman/php-robots": "2.0"
     }
 }
 ```
@@ -23,11 +23,11 @@ Or add the following to your ```composer.json``` in the require section and then
 ### default
 
 ```php
-use Steein\Robots\Robots;
-use Steein\Robots\RobotsInterface;
+use JazzMan\Robots\Robots;
+use JazzMan\Robots\RobotsInterface;
 
 Robots::getInstance()
-    ->host("www.steein.ru")
+    ->host("www.site.com")
     ->userAgent("*")
     ->allow("one","two")
     ->disallow("one","two","three")
