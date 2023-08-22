@@ -1,90 +1,64 @@
 <?php
+
 namespace JazzMan\Robots;
 
 use Closure;
 
-interface RobotsInterface
-{
+interface RobotsInterface {
 
     /**
-     * Add a comment to the robots.txt.
-     *
-     * @param string|array $comment
-     * @return RobotsInterface
-     */
-    public function comment(...$comment) : RobotsInterface;
+         * Add a comment to the robots.txt.
+         */
+    public function comment( string ...$comment ): self;
 
     /**
      * Add a Host to the robots.txt.
-     *
-     * @param string $host
-     * @return RobotsInterface
      */
-    public function host($host) : RobotsInterface;
+    public function host( string $host ): self;
 
     /**
      * Add a disallow rule to the robots.txt.
      *
      * @param string|array $directories
-     * @return RobotsInterface
      */
-    public function disallow(...$directories) : RobotsInterface;
+    public function disallow( string ...$directories ): self;
 
     /**
      * Add a allow rule to the robots.txt.
-     *
-     * @param string|array $directories
-     * @return RobotsInterface
      */
-    public function allow(...$directories) : RobotsInterface;
+    public function allow( string ...$directories ): self;
 
     /**
      * Add a User-agent to the robots.txt.
-     *
-     * @param string $userAgent
-     * @return RobotsInterface
      */
-    public function userAgent($userAgent) : RobotsInterface;
+    public function userAgent( string $userAgent ): self;
 
     /**
      * Add a Sitemap to the robots.txt.
-     *
-     * @param string|array $sitemap
-     * @return RobotsInterface
      */
-    public function sitemap($sitemap) : RobotsInterface;
+    public function sitemap( array|string $sitemap ): self;
 
     /**
      * Adding a separator to the robots.txt.
-     *
-     * @param int $num
-     * @return RobotsInterface
      */
-    public function spacer(int $num = 1) : RobotsInterface;
+    public function spacer( int $num = 1 ): self;
 
     /**
      * Perform a callback for each batch agent.
      *
-     * @param callable| Closure $closure
-     * @return RobotsInterface
      * @throws RobotsException
      */
-    public function each(\Closure $closure) : RobotsInterface;
+    public function each( callable|Closure $closure ): self;
 
-    /***
-     *  Creates a file with the selected data
+    /**
+     *  Creates a file with the selected data.
      *
-     * @param string|null $path
      * @throws RobotsException
-     *
-     * @return void
      */
-    public function create(string $path = "robots.txt");
+    public function create( ?string $path = 'robots.txt' ): void;
 
-    /***
+    /**
      * Output of generated data to the robots.txt.
-     *
-     * @return string
      */
-    public function render() : string;
+    public function render(): string;
 }

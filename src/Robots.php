@@ -1,78 +1,65 @@
 <?php
+
 namespace JazzMan\Robots;
 
 use Closure;
 use JazzMan\Traits\SingletonTrait;
 
-class Robots implements RobotsInterface
-{
-	use SingletonTrait;
+class Robots implements RobotsInterface {
+
+    use SingletonTrait;
 
     /**
-     * The lines of for the robots.txt
-     *
-     * @var array
+     * The lines of for the robots.txt.
      */
-    protected $linear   =   [
-        //
-    ];
+    protected array $linear = [];
 
-    /**
-     * Construct
-    */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
 
     /**
      * Perform a callback for each batch agent.
      *
-     * @param callable|Closure $closure
-     * @return RobotsInterface
-     * @throws RobotsException
+     * @return \JazzMan\Robots\RobotsInterface
      */
-    public function each(\Closure|callable $closure) : RobotsInterface
-    {
-        if($closure instanceof \Closure) {
-            $closure($this);
+    public function each( callable|Closure $closure ): RobotsInterface {
+        if ( $closure instanceof Closure ) {
+            $closure( $this );
         }
 
         return $this;
     }
+
     /**
      * Add a comment to the robots.txt.
      *
-     * @param string|array $comment
-     * @return RobotsInterface
+     * @return \JazzMan\Robots\RobotsInterface
+     *
+     * @throws \JazzMan\Robots\RobotsException
      */
-    public function comment(...$comment) : RobotsInterface
-    {
-        $this->addLines($comment, "# ");
+    public function comment( string ...$comment ): RobotsInterface {
+        $this->addLines( $comment, '# ' );
+
         return $this;
     }
 
     /**
      * Add a Host to the robots.txt.
-     *
-     * @param string $host
-     * @return RobotsInterface
      */
-    public function host($host) : RobotsInterface
-    {
-        $this->addLine("Host: $host");
+    public function host( string $host ): RobotsInterface {
+        $this->addLine( "Host: {$host}" );
+
         return $this;
     }
 
     /**
      * Add a disallow rule to the robots.txt.
      *
-     * @param string|array $directories
-     * @return RobotsInterface
+     * @param string[] $directories
+     *
+     * @throws \JazzMan\Robots\RobotsException
      */
-    public function disallow(...$directories) : RobotsInterface
-    {
-        $this->addRuleLine($directories, 'Disallow');
+    public function disallow( string ...$directories ): RobotsInterface {
+        $this->addRuleLine( $directories, 'Disallow' );
 
         return $this;
     }
@@ -80,25 +67,19 @@ class Robots implements RobotsInterface
     /**
      * Add a allow rule to the robots.txt.
      *
-     * @param string|array $directories
-     * @return RobotsInterface
+     * @throws \JazzMan\Robots\RobotsException
      */
-    public function allow(...$directories) : RobotsInterface
-    {
-        $this->addRuleLine($directories, 'Allow');
+    public function allow( string ...$directories ): RobotsInterface {
+        $this->addRuleLine( $directories, 'Allow' );
 
         return $this;
     }
 
     /**
      * Add a User-agent to the robots.txt.
-     *
-     * @param string $userAgent
-     * @return RobotsInterface
      */
-    public function userAgent($userAgent) : RobotsInterface
-    {
-        $this->addLine("User-agent: $userAgent");
+    public function userAgent( string $userAgent ): RobotsInterface {
+        $this->addLine( "User-agent: {$userAgent}" );
 
         return $this;
     }
@@ -106,119 +87,99 @@ class Robots implements RobotsInterface
     /**
      * Add a Sitemap to the robots.txt.
      *
-     * @param string|array $sitemap
-     * @return RobotsInterface
+     * @throws \JazzMan\Robots\RobotsException
      */
-    public function sitemap($sitemap) : RobotsInterface
-    {
-        if(is_array($sitemap)) {
-            $this->addLines($sitemap, "Sitemap: ");
-        }else {
-            $this->addLine("Sitemap: ".$sitemap);
+    public function sitemap( array|string $sitemap ): RobotsInterface {
+        if ( \is_array( $sitemap ) ) {
+            $this->addLines( $sitemap, 'Sitemap: ' );
+        } else {
+            $this->addLine( 'Sitemap: '.$sitemap );
         }
+
         return $this;
     }
 
     /**
      * Adding a separator to the robots.txt.
-     *
-     * @param int $num
-     * @return RobotsInterface
      */
-    public function spacer(int $num = 1) : RobotsInterface
-    {
-        for ($i = 0; $i <= $num; $i++) {
-            $this->addLine(null);
+    public function spacer( int $num = 1 ): RobotsInterface {
+        for ( $i = 0; $i <= $num; ++$i ) {
+            $this->addLine( null );
         }
 
         return $this;
     }
 
-    /***
-     *  Creates a file with the selected data
+    /**
+     *  Creates a file with the selected data.
      *
-     * @param string|null $path
      * @throws RobotsException
-     *
-     * @return void
      */
-    public function create(string $path = "robots.txt")
-    {
-        if($this->linear == null) {
-            throw new RobotsException("There were errors while creating robots.txt");
-        }elseif(!file_exists($path)) {
-            file_put_contents($path,implode(PHP_EOL, $this->linear));
-        }else {
-            unlink($path);
-            file_put_contents($path,implode(PHP_EOL, $this->linear));
+    public function create( ?string $path = 'robots.txt' ): void {
+        if ( empty( $this->linear ) ) {
+            throw new RobotsException( 'There were errors while creating robots.txt' );
         }
+
+        if ( file_exists( $path ) ) {
+            unlink( $path );
+        }
+        file_put_contents( $path, implode( PHP_EOL, $this->linear ) );
     }
 
-    /***
+    /**
      * Output of generated data to the robots.txt.
-     *
-     * @return string
-    */
-    public function render() : string
-    {
-        return implode(PHP_EOL, $this->linear);
+     */
+    public function render(): string {
+        return implode( PHP_EOL, $this->linear );
     }
 
     /**
      * Adding a new rule to the robots.txt.
      *
-     * @param string|array $directories
-     * @param string       $rule
+     * @throws \JazzMan\Robots\RobotsException
      */
-    protected function addRuleLine($directories, $rule)
-    {
-        $this->isEmpty($directories);
+    protected function addRuleLine( array|string $directories, string $rule ): void {
+        $this->isEmpty( $directories );
 
-        foreach ((array) $directories as $directory) {
-            $this->addLine("$rule: $directory");
+        foreach ( (array) $directories as $directory ) {
+            $this->addLine( "{$rule}: {$directory}" );
         }
     }
 
     /**
      * Adding a new line to the robots.txt.
-     *
-     * @param string $line
      */
-    protected function addLine($line)
-    {
-        $this->linear[] = (string) $line;
+    protected function addLine( ?string $line ): void {
+        $this->linear[] = $line;
     }
 
     /**
      * Adding multiple rows to the robots.txt.
      *
-     * @param string|array $lines
-     * @param null $prefix
+     * @throws \JazzMan\Robots\RobotsException
      */
-    protected function addLines($lines, $prefix = null)
-    {
-        $this->isEmpty($lines);
+    protected function addLines( array|string $lines, ?string $prefix = null ): void {
+        $this->isEmpty( $lines );
 
-        foreach ((array) $lines as $line) {
-            if($prefix != null) {
-                $this->addLine($prefix.$line);
-            }else {
-                $this->addLine($line);
+        foreach ( (array) $lines as $line ) {
+            if ( null !== $prefix ) {
+                $this->addLine( $prefix.$line );
+            } else {
+                $this->addLine( $line );
             }
         }
     }
 
-    /***
-     * Checking the data for existence
+    /**
+     * Checking the data for existence.
      *
      * @param null $var
-     * @return void
+     *
      * @throws RobotsException
      */
-    protected function isEmpty($var = null)
-    {
-        if($var == null) {
-            throw new RobotsException("The parameter must not be empty");
+    protected function isEmpty( $var = null ): void {
+        if ( empty( $var ) ) {
+            throw new RobotsException( 'The parameter must not be empty' );
         }
     }
 }
