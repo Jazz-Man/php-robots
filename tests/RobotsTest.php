@@ -22,7 +22,7 @@ final class RobotsTest extends TestCase {
 
     public function testHost(): void {
         $robots = new Robots();
-        $host = 'www.steein.ru';
+        $host = 'www.site.com';
         self::assertStringNotContainsString( "Host: {$host}", $robots->render() );
         $robots->host( $host );
         self::assertStringContainsString( "Host: {$host}", $robots->render() );
