@@ -24,7 +24,7 @@
   },
   "require-dev": {
     "jazzman/php-cs-fixer-rules": "^0.2.0",
-    "phpunit/phpunit": "^10.3"
+    "phpunit/phpunit": "^11.4"
   },
   "autoload": {
     "psr-4": {
